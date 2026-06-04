@@ -1,0 +1,70 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "mcmaster": "https://www.mcmaster.ca/ns#",
+    "@vocab": "https://www.mcmaster.ca/ns#",
+    "name": "schema:name",
+    "description": "schema:description",
+    "url": "schema:url",
+    "logo": "schema:logo",
+    "email": "schema:email",
+    "sameAs": "schema:sameAs",
+    "address": "schema:address",
+    "foundingDate": "schema:foundingDate",
+    "Organization": "schema:CollegeOrUniversity",
+    "University": "schema:CollegeOrUniversity",
+    "WebAPI": "schema:WebAPI",
+    "api": {
+      "@id": "schema:potentialAction",
+      "@type": "@id"
+    },
+    "humanURL": {
+      "@id": "schema:documentation",
+      "@type": "@id"
+    },
+    "baseURL": {
+      "@id": "schema:url",
+      "@type": "@id"
+    },
+    "developerPortal": {
+      "@id": "mcmaster:developerPortal",
+      "@type": "@id"
+    },
+    "repository": {
+      "@id": "schema:dataCatalog",
+      "@type": "@id"
+    },
+    "Repository": "schema:DataCatalog",
+    "Record": "schema:CreativeWork",
+    "identifier": "schema:identifier",
+    "datestamp": "schema:dateModified",
+    "setSpec": "mcmaster:setSpec",
+    "title": "schema:headline",
+    "creator": "schema:creator",
+    "subject": "schema:keywords",
+    "publisher": "schema:publisher",
+    "date": "schema:datePublished",
+    "type": "schema:additionalType",
+    "format": "schema:encodingFormat",
+    "rights": "schema:license"
+  },
+  "@type": "University",
+  "name": "McMaster University",
+  "url": "https://www.mcmaster.ca/",
+  "description": "Public research university in Hamilton, Ontario, Canada. Programmatic interfaces include a gated API service developer portal and the public MacSphere OAI-PMH institutional repository.",
+  "email": "macsphere@mcmaster.ca",
+  "address": "Hamilton, Ontario, Canada",
+  "sameAs": [
+    "https://github.com/mcmaster-university",
+    "https://ca.linkedin.com/school/mcmaster-university/"
+  ],
+  "developerPortal": "https://developer.api.mcmaster.ca/",
+  "repository": {
+    "@type": "Repository",
+    "name": "MacSphere at McMaster University",
+    "description": "DSpace 8.2 institutional repository of theses, dissertations, and open-access research outputs, exposed via a public OAI-PMH 2.0 metadata-harvesting interface.",
+    "baseURL": "https://macsphere.mcmaster.ca/server/oai/request",
+    "humanURL": "https://library.mcmaster.ca/research/getting-started-macsphere"
+  }
+}

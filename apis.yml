@@ -77,6 +77,10 @@ common:
     url: finops/mcmaster-finops.yml
   - type: Review
     url: review.yml
+  - type: JSONLD
+    url: json-ld/mcmaster-context.jsonld
+  - type: Blog
+    url: blogs/blogs.json
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

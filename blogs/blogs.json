@@ -1,0 +1,14 @@
+{
+  "repo": "mcmaster",
+  "feeds": [
+    {
+      "source": "https://library.mcmaster.ca/news",
+      "feed_url": "https://library.mcmaster.ca/news",
+      "title": "McMaster University Library News",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-06-03T00:00:00Z"
+}
