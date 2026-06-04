@@ -1,0 +1,82 @@
+---
+aid: mcmaster
+name: McMaster University
+description: >-
+  McMaster University is a public research university in Hamilton, Ontario,
+  Canada, ranked #176 in the QS World University Rankings 2025. Its developer
+  and API presence is centered on a gated API service developer portal operated
+  by University Technology Services, which requires institutional MacID
+  authentication and a registration step before any API can be subscribed to;
+  the underlying API catalog is therefore not publicly browsable. The most
+  openly accessible programmatic interface is the library's MacSphere
+  institutional repository, a DSpace platform that exposes a public OAI-PMH
+  metadata-harvesting endpoint.
+type: Index
+position: Consumer
+access: 3rd-Party
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+url: https://raw.githubusercontent.com/api-evangelist/mcmaster/refs/heads/main/apis.yml
+tags:
+  - Education
+  - Higher Education
+  - University
+  - Canada
+  - Ontario
+  - Research
+  - Open Access
+  - Library
+created: '2026-06-03'
+modified: '2026-06-03'
+specificationVersion: '0.19'
+apis:
+  - aid: mcmaster:developer-portal
+    name: McMaster API Service Developer Portal
+    description: >-
+      Institutional API management developer portal operated by McMaster
+      University Technology Services. Access requires sign-in with a MacID and
+      password plus a short registration step; APIs and products cannot be
+      browsed or subscribed to without authentication, so the catalog is gated
+      and not publicly documented.
+    humanURL: https://developer.api.mcmaster.ca/
+    tags: [ Developer Portal, Authentication, Gated, API Management ]
+    properties:
+      - type: Documentation
+        url: https://developer.api.mcmaster.ca/
+      - type: SignUp
+        url: https://developer.api.mcmaster.ca/
+  - aid: mcmaster:macsphere-oai
+    name: MacSphere OAI-PMH Repository Interface
+    description: >-
+      Publicly accessible OAI-PMH 2.0 metadata-harvesting interface for
+      MacSphere, McMaster University Libraries' DSpace institutional repository
+      of theses, dissertations, and open-access research outputs. Supports the
+      standard OAI-PMH verbs (Identify, ListRecords, ListSets, GetRecord) over
+      HTTP returning XML metadata.
+    humanURL: https://library.mcmaster.ca/research/getting-started-macsphere
+    baseURL: https://macsphere.mcmaster.ca/server/oai/request
+    tags: [ Library, OAI-PMH, DSpace, Open Access, Institutional Repository, Metadata ]
+    properties:
+      - type: Documentation
+        url: https://library.mcmaster.ca/research/getting-started-macsphere
+common:
+  - type: Website
+    url: https://www.mcmaster.ca/
+  - type: DeveloperPortal
+    url: https://developer.api.mcmaster.ca/
+  - type: GitHub
+    url: https://github.com/mcmaster-university
+  - type: LinkedIn
+    url: https://ca.linkedin.com/school/mcmaster-university/
+  - type: Status
+    url: https://uts.mcmaster.ca/status/
+  - type: Plans
+    url: plans/mcmaster-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/mcmaster-rate-limits.yml
+  - type: FinOps
+    url: finops/mcmaster-finops.yml
+  - type: Review
+    url: review.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,46 @@
+---
+name: McMaster University
+description: McMaster University public developer/API footprint review for APIs.json cataloging.
+url: https://raw.githubusercontent.com/api-evangelist/mcmaster/refs/heads/main/review.yml
+created: '2026-06-03'
+modified: '2026-06-03'
+reviews:
+  - date: '2026-06-03'
+    rating: 2
+    summary: >-
+      McMaster runs a real institutional API management developer portal at
+      developer.api.mcmaster.ca, but it is fully gated behind MacID
+      authentication and a registration step, so no API catalog, endpoints, or
+      docs are publicly verifiable. The one openly reachable programmatic
+      interface is the MacSphere DSpace OAI-PMH endpoint, which I confirmed live
+      (verb=Identify returns repositoryName "Macsphere at McMaster University").
+      The mcmaster-university GitHub org exists but has zero public repos. No
+      endpoints were fabricated; only directly probed URLs are recorded below.
+    endpoints:
+      - url: https://developer.api.mcmaster.ca/
+        status: 200
+        note: Developer portal sign-in page; APIs/products gated behind MacID auth.
+      - url: https://developer.api.mcmaster.ca/apis
+        status: 200
+        note: API listing page resolves but requires authentication to view content.
+      - url: https://macsphere.mcmaster.ca/server/oai/request?verb=Identify
+        status: 200
+        note: Live OAI-PMH 2.0 endpoint for MacSphere DSpace repository (XML).
+      - url: https://macsphere.mcmaster.ca/oai/request?verb=Identify
+        status: 404
+        note: Legacy/pre-DSpace7 OAI path; not active.
+      - url: https://library.mcmaster.ca/research/getting-started-macsphere
+        status: 200
+        note: MacSphere documentation and getting-started guide.
+      - url: https://www.mcmaster.ca/
+        status: 200
+        note: Official university website.
+      - url: https://uts.mcmaster.ca/status/
+        status: 200
+        note: University Technology Services system status page.
+      - url: https://github.com/mcmaster-university
+        status: 200
+        note: Official-named GitHub org (id 47285564), exists but 0 public repos.
+      - url: https://status.mcmaster.ca/
+        status: 0
+        note: Does not resolve; no dedicated status subdomain.
