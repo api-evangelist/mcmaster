@@ -6,9 +6,10 @@
       "feed_url": "https://library.mcmaster.ca/news",
       "title": "McMaster University Library News",
       "saved": 0,
-      "method": "none"
+      "method": "none",
+      "note": "All fetch attempts returned HTTP 403 Forbidden (news page, /news/feed, /news/rss.xml, /news/feed.xml)."
     }
   ],
   "post_count": 0,
-  "fetched": "2026-06-07T00:00:00Z"
+  "fetched": "2026-06-21T17:00:00Z"
 }
