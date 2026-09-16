@@ -324,7 +324,7 @@ common:
 - type: DeveloperPortal
   url: https://developer.api.mcmaster.ca/
 - type: APIReference
-  url: openapi/mcmaster-experts-openapi.yml
+  url: openapi/_original/mcmaster-experts-openapi.yml
 - type: OpenAPI
   url: openapi/_original/mcmaster-experts-openapi.yml
 - type: JSONSchema
