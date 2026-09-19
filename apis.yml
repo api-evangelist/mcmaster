@@ -119,6 +119,13 @@ apis:
   - SAML
   - eduGAIN
   - Canadian Access Federation
+  - SSO
+  tags_raw:
+  - Identity Federation
+  - Shibboleth
+  - SAML
+  - eduGAIN
+  - Canadian Access Federation
   - Single Sign-On
   properties:
   - type: IdentityFederation
