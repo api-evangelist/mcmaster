@@ -1,0 +1,74 @@
+# x-method is the AUTHORSHIP vocabulary build-provenance-manifest.py reads (who wrote the
+# file: we did). `method: probed` below is the university-pipeline PROVENANCE vocabulary
+# (how we came to hold it: live probe). Two axes, two keys, neither guessed.
+x-method: generated
+version: '0.1'
+generated: '2026-09-01'
+method: probed
+source: https://experts.mcmaster.ca/api/people?sort=name
+note: >-
+  Error behaviour observed live on 2026-09-01. The McMaster Experts API has NO error contract: it
+  returns bare status codes with empty or HTML bodies, never a structured JSON error. Documented as
+  found, not as it ought to be.
+errors:
+  - status: 404
+    surface: experts.mcmaster.ca
+    body: HTML application shell
+    content_type: text/html
+    detail: >-
+      An unrecognised /api/* path returns the Next.js 404 page as HTML, not JSON. A client parsing
+      the response as JSON will fail on the first byte rather than read a status. Observed for
+      /api/groups, /api/works, /api/publication, /api/departments, /api/labels.
+    evidence:
+      - url: https://experts.mcmaster.ca/api/groups
+        status: 404
+  - status: 500
+    surface: experts.mcmaster.ca
+    body: empty
+    detail: >-
+      An unrecognised value for a recognised parameter returns 500 with an empty body and no
+      message. Observed for sort=name on /api/people. There is no 400 path: a bad parameter value is
+      a server error, not a client error, which is a contract defect worth reporting to McMaster.
+    evidence:
+      - url: https://experts.mcmaster.ca/api/people?sort=name
+        status: 500
+  - status: 503
+    surface: experts.mcmaster.ca
+    body: 503 Service Temporarily Unavailable
+    content_type: text/html
+    detail: >-
+      Rapid sequential requests trip an edge throttle that returns an nginx HTML 503 with no
+      Retry-After header. No rate limit is documented anywhere. Reproduced repeatedly while probing;
+      a 3-second delay between requests was sufficient to avoid it.
+    evidence:
+      - url: https://experts.mcmaster.ca/api/publications
+        status: 503
+  - status: 400
+    surface: sso.mcmaster.ca
+    detail: A bare GET to the SAML2 Redirect SSO endpoint without an AuthnRequest returns 400. Correct behaviour.
+    evidence:
+      - url: https://sso.mcmaster.ca/idp/profile/SAML2/Redirect/SSO
+        status: 400
+  - status: 403
+    surface: sso.mcmaster.ca
+    detail: The IdP host root returns 403. Correct hardening; the metadata path remains 200.
+    evidence:
+      - url: https://sso.mcmaster.ca/
+        status: 403
+soft_404s_found:
+  note: >-
+    Three McMaster URLs return 200 or 302 while serving unrelated content. Recorded so no future run
+    credits them as live pointers.
+  items:
+    - url: https://www.mcmaster.ca/llms.txt
+      status: 200
+      detail: Redirects to the homepage. No llms.txt exists.
+    - url: https://www.mcmaster.ca/.well-known/security.txt
+      status: 200
+      detail: Redirects to the homepage. No security.txt exists.
+    - url: https://uts.mcmaster.ca/status/
+      status: 302
+      detail: >-
+        302 to https://uts.mcmaster.ca/. The sibling /service-status/ returns 200 but serves the UTS
+        home page ("Home - UTS"). McMaster publishes no status page. The Status pointer previously in
+        apis.yml has been removed on this evidence.

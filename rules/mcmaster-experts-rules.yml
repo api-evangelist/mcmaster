@@ -1,0 +1,72 @@
+version: '0.1'
+generated: '2026-09-01'
+method: derived
+source: openapi/mcmaster-experts-openapi.yml
+note: >-
+  Spectral ruleset derived from the probed McMaster Experts contract. Built-in Spectral functions
+  only. These rules encode the gaps found while probing so a future pass can tell whether McMaster
+  has closed them, not so this repo can claim McMaster met them.
+formats: [ oas3_1 ]
+extends: [[ spectral:oas, recommended ]]
+rules:
+  mcmaster-operator-declared:
+    description: Every McMaster contract must declare who operates the thing it describes.
+    message: 'info.x-operator is required — institution, tenant, vendor, registry or federation.'
+    severity: error
+    given: $.info
+    then:
+      field: x-operator
+      function: truthy
+  mcmaster-provenance-declared:
+    description: An unmarked artifact is credited to the institution as if they published it.
+    message: 'info.x-provenance.method is required.'
+    severity: error
+    given: $.info.x-provenance
+    then:
+      field: method
+      function: truthy
+  mcmaster-server-is-institution-host:
+    description: A server URL must sit under a McMaster registrable domain, or the operator is not institution.
+    message: 'servers[].url must be under mcmaster.ca.'
+    severity: error
+    given: $.servers[*].url
+    then:
+      function: pattern
+      functionOptions:
+        match: '^https://[a-z0-9.-]*mcmaster\.ca'
+  mcmaster-no-structured-error:
+    description: >-
+      Every operation should define a 400 for a bad parameter value. The live API returns 500 with an
+      empty body instead, which is the defect this rule exists to surface.
+    message: 'Operation defines no 400 response; the live service answers a bad parameter with 500.'
+    severity: warn
+    given: $.paths[*].get.responses
+    then:
+      field: '400'
+      function: truthy
+  mcmaster-rate-limit-undocumented:
+    description: >-
+      The service throttles to 503 with no Retry-After and no published limit. Every operation should
+      say so until McMaster documents one.
+    message: 'Operation should document the 503 throttling behaviour.'
+    severity: warn
+    given: $.paths[*].get.responses
+    then:
+      field: '503'
+      function: truthy
+  mcmaster-personal-data-flagged:
+    description: A schema property carrying personal data must be flagged so no downstream artifact packages it.
+    message: 'macid is personal data and must carry x-personal-data.'
+    severity: error
+    given: $.components.schemas.Person.properties.macid
+    then:
+      field: x-personal-data
+      function: truthy
+  mcmaster-operation-described:
+    description: Probed operations must say what was observed, since no vendor documentation exists to fall back on.
+    message: 'Operation requires a description.'
+    severity: error
+    given: $.paths[*].get
+    then:
+      field: description
+      function: truthy

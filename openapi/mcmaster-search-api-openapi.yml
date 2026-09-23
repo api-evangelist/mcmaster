@@ -1,0 +1,120 @@
+openapi: 3.2.0
+info:
+  title: McMaster Experts Search API
+  version: '2026-09-01'
+  summary: Public read-only JSON API behind McMaster University's researcher and expertise discovery gateway.
+  description: McMaster Experts is McMaster University's researcher and expertise discovery gateway, operated by the university itself at experts.mcmaster.ca.
+  contact:
+    name: McMaster Experts
+    url: https://experts.mcmaster.ca/about
+  x-operator: institution
+  x-operator-evidence: Host experts.mcmaster.ca is under McMaster University's own registrable domain mcmaster.ca. The application is bespoke (Next.js build, McMaster-specific `macid` field, McMaster group taxonomy) and matches no vendor research-information product.
+  x-provenance:
+    generated: '2026-09-01'
+    method: probed
+    source: https://experts.mcmaster.ca/api/search?q=nursing
+servers:
+- url: https://experts.mcmaster.ca
+  description: Production. Observed live 2026-09-01.
+security: []
+tags:
+- name: Search
+  description: Cross-entity keyword search over people, groups, labels and publications.
+paths:
+  /api/search:
+    get:
+      operationId: search
+      tags:
+      - Search
+      summary: Search across all indexed entity types
+      description: Keyword search returning a mixed result set of groups (departments, centres, institutes), users, user labels and publications, ranked by Elasticsearch relevance score. Observed returning `total` 1114 for `q=nursing` on 2026-09-01.
+      parameters:
+      - name: q
+        in: query
+        required: true
+        description: Free-text query. Echoed back in `params`.
+        schema:
+          type: string
+        example: nursing
+      responses:
+        '200':
+          description: Ranked mixed-entity result set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '500':
+          description: Returned for an unrecognised value of a recognised parameter.
+        '503':
+          description: Returned by the edge under rapid sequential requests. Observed while probing; no documented rate limit exists. Back off and retry.
+components:
+  schemas:
+    SearchHit:
+      type: object
+      required:
+      - id
+      - typeKey
+      properties:
+        id:
+          type: string
+          description: Opaque entity identifier. Numeric-as-string for publications, base64url-like for others.
+        index:
+          type: string
+          description: Name of the backing Elasticsearch index, including its build timestamp.
+          example: search_1788255001
+        score:
+          type: number
+          description: Elasticsearch relevance score.
+        nameHTML:
+          type:
+          - string
+          - 'null'
+          description: Display name with search-term highlighting markup.
+        nameKey:
+          type:
+          - string
+          - 'null'
+          description: Plain display name.
+        typeKey:
+          type: string
+          description: Entity type. Values observed while probing; the set is not published.
+          examples:
+          - group
+          - user
+          - user-label
+          - publication
+        typeNames:
+          type: array
+          items:
+            type: string
+          description: Human-readable type labels, most specific first.
+        typeBoost:
+          type: integer
+          description: Ranking weight applied to this entity type.
+        slug:
+          type:
+          - string
+          - 'null'
+          description: URL slug on experts.mcmaster.ca.
+    SearchResponse:
+      type: object
+      required:
+      - params
+      - total
+      - items
+      properties:
+        params:
+          type: object
+          description: Echo of the query parameters the service recognised.
+          properties:
+            q:
+              type: string
+        total:
+          type: integer
+          description: Total matching documents across all entity types.
+          example: 1114
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchHit'
+x-method: generated

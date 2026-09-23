@@ -3,8 +3,123 @@ name: McMaster University
 description: McMaster University public developer/API footprint review for APIs.json cataloging.
 url: https://raw.githubusercontent.com/api-evangelist/mcmaster/refs/heads/main/review.yml
 created: '2026-06-03'
-modified: '2026-06-03'
+modified: '2026-09-01'
 reviews:
+  - date: '2026-09-01'
+    rating: 3
+    pipeline: university
+    summary: >-
+      Re-profiled under the university pipeline, which settles WHO OPERATES each surface before
+      saving any contract. The June 2026 review concluded McMaster's only open programmatic
+      interface was MacSphere's OAI-PMH endpoint. That was wrong by omission: McMaster operates a
+      genuine, bespoke, unauthenticated JSON API at experts.mcmaster.ca that no previous pass found,
+      and it operates its own Shibboleth Identity Provider published into eduGAIN via the Canadian
+      Access Federation. Both are institution-operated. Neither is a vendor's contract. The rating
+      moves up on the strength of a real found surface, not on padding.
+
+
+      What was added: a probed OpenAPI for the McMaster Experts API (three confirmed operations,
+      every parameter and field observed in a live response, no inference), and a conformance record
+      showing five of the twelve education-regime domain standards met with live evidence — oai-pmh,
+      shibboleth, saml, datacite and crossref.
+
+
+      What was NOT added, deliberately: no DSpace contract. MacSphere is self-hosted on McMaster's
+      own domain, so the deployment is McMaster's, but the REST contract is DSpace's generic API and
+      writing it into this repo would credit McMaster with DSpace's engineering — the exact defect
+      this pipeline exists to prevent. Same reasoning for Borealis, which is recorded as a tenancy
+      rather than a contract.
+
+
+      One pointer was removed as dead: uts.mcmaster.ca/status/ 302s to the UTS homepage and the
+      sibling /service-status/ serves the same homepage. McMaster publishes no status page.
+    findings:
+      - class: disclosure
+        severity: medium
+        summary: >-
+          experts.mcmaster.ca/api/people returns 7,301 directory records anonymously, each carrying
+          the individual's macid — the McMaster institutional login identifier — alongside name and
+          appointments. The expertise directory is intentionally public and the identifier is
+          derivable from the person's own profile URL, so this is a low-severity exposure rather
+          than a leak. It is recorded because bulk anonymous retrieval of an institutional login
+          identifier for every researcher is a different thing from a browsable profile page.
+        handling: >-
+          Documented structurally only. No real person record appears in any artifact in this repo;
+          examples use placeholders. No agent skill and no MCP tool was derived from this endpoint,
+          per the enrichment PII guardrail. Worth telling McMaster; they may not know.
+      - class: contract-defect
+        severity: low
+        summary: >-
+          The Experts API answers a bad parameter value with 500 and an empty body rather than 400,
+          returns HTML for 404 on an /api/ path, and throttles to an nginx HTML 503 with no
+          Retry-After and no documented rate limit.
+        handling: Recorded in errors/mcmaster-errors.yml and encoded as warnings in rules/.
+    endpoints:
+      - url: https://experts.mcmaster.ca/api/search?q=nursing
+        status: 200
+        note: >-
+          Institution-operated public JSON API. Cross-entity search, total 1114. Bespoke Next.js
+          application, no vendor research-information product behind it.
+      - url: https://experts.mcmaster.ca/api/people
+        status: 200
+        note: 7,301 directory records, 60 per batch, anonymous. Personal data — see findings above.
+      - url: https://experts.mcmaster.ca/api/publications
+        status: 200
+        note: 273,828 scholarly works, 96 per batch, anonymous, with DOIs.
+      - url: https://experts.mcmaster.ca/api/people?sort=name
+        status: 500
+        note: Unrecognised sort value returns 500 with an empty body. No 400 path exists.
+      - url: https://sso.mcmaster.ca/idp/shibboleth
+        status: 200
+        note: >-
+          McMaster's own Shibboleth IdP SAML 2.0 metadata, scope mcmaster.ca. Institution-operated
+          identity federation surface — the class this cohort was most completely missing.
+      - url: https://technical.edugain.org/api.php?action=list_entities&format=json
+        status: 200
+        note: >-
+          Confirms the IdP is registered in eduGAIN by the Canadian Access Federation (CANARIE),
+          SIRTFI asserted, first seen 2017-11-28.
+      - url: https://macsphere.mcmaster.ca/server/api
+        status: 200
+        note: DSpace 8.2 REST root, 26,361 items. Self-hosted; contract is DSpace's, not McMaster's.
+      - url: https://macsphere.mcmaster.ca/server/oai/request?verb=ListMetadataFormats
+        status: 200
+        note: Twelve metadata formats offered including oai_dc, mods, mets, rioxx, marc.
+      - url: https://borealisdata.ca/api/dataverses/mcmaster
+        status: 200
+        note: >-
+          Named McMaster University Dataverse collection on Borealis (Scholars Portal / OCUL).
+          Tenancy — real institutional fact, vendor contract.
+      - url: https://api.datacite.org/providers/mcmaster
+        status: 200
+        note: DataCite provider `mcmaster`, consortium_organization, ROR 02fa3aq29. Registry membership.
+      - url: https://api.crossref.org/members/5872
+        status: 200
+        note: McMaster University Library, DOI prefix 10.15173, 3,018 DOIs. Registry membership.
+      - url: https://experts.mcmaster.ca/ws/api
+        status: 404
+        note: >-
+          Probed deliberately. No Elsevier Pure web-service surface exists here — evidence that
+          McMaster Experts is bespoke rather than a vendor RIS.
+      - url: https://uts.mcmaster.ca/status/
+        status: 302
+        note: >-
+          DEAD. 302 to the UTS homepage; /service-status/ 200s but serves the same homepage. The
+          June 2026 review recorded this as a live status page. Pointer removed from apis.yml.
+      - url: https://www.mcmaster.ca/llms.txt
+        status: 200
+        note: Soft-404 — redirects to the homepage. No llms.txt.
+      - url: https://www.mcmaster.ca/.well-known/security.txt
+        status: 200
+        note: Soft-404 — redirects to the homepage. No security.txt.
+      - url: https://academiccalendars.romcmaster.ca/
+        status: 200
+        note: >-
+          Modern Campus Catalog (Acalog) under the Registrar's Office domain. No API — /widget-api/
+          returns 404. Course catalog exists as a human surface only.
+      - url: https://github.com/McMasterRS
+        status: 200
+        note: McMaster University Research Software — an institution GitHub org the June pass missed.
   - date: '2026-06-03'
     rating: 2
     summary: >-

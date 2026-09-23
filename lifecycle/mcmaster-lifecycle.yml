@@ -1,0 +1,58 @@
+# x-method is the AUTHORSHIP vocabulary build-provenance-manifest.py reads (who wrote the
+# file: we did). `method: probed` below is the university-pipeline PROVENANCE vocabulary
+# (how we came to hold it: live probe). Two axes, two keys, neither guessed.
+x-method: generated
+version: '0.1'
+generated: '2026-09-01'
+method: probed
+source: https://experts.mcmaster.ca/api/search
+note: >-
+  Lifecycle posture per surface. McMaster publishes no versioning policy, no changelog, no
+  deprecation policy and no status page for any surface. Recorded as an evidenced absence.
+surfaces:
+  - surface: McMaster Experts API
+    host: experts.mcmaster.ca
+    x-operator: institution
+    versioning: none
+    detail: >-
+      No version segment in any path, no version header, no Accept media-type versioning. The only
+      version-like value observed is the backing index name `search_1788255001`, echoed on every
+      search hit — an internal build stamp, not a client-facing version. The API is undocumented, so
+      any change is unannounced and a consumer learns about it by breaking.
+    changelog: none
+    deprecation_policy: none
+    status_page: none
+    evidence:
+      - url: https://experts.mcmaster.ca/api/search?q=nursing
+        status: 200
+        locator: items[].index = "search_1788255001"
+  - surface: MacSphere
+    host: macsphere.mcmaster.ca
+    x-operator: institution
+    versioning: platform
+    detail: >-
+      DSpace 8.2, self-reported at /server/api. Version tracks the upstream DSpace release, so the
+      lifecycle is DSpace's, not McMaster's. OAI-PMH is pinned at protocol version 2.0, and
+      earliestDatestamp 2014-06-17 gives the repository's own start of record.
+    evidence:
+      - url: https://macsphere.mcmaster.ca/server/api
+        status: 200
+        locator: dspaceVersion = "DSpace 8.2"
+  - surface: McMaster API Service Developer Portal
+    host: developer.api.mcmaster.ca
+    x-operator: institution
+    versioning: unknown
+    detail: >-
+      Azure API Management. Versioning is a per-API setting inside APIM and the catalog is gated, so
+      nothing about the lifecycle of any API behind it can be read anonymously.
+  - surface: McMaster Shibboleth IdP
+    host: sso.mcmaster.ca
+    x-operator: federation
+    versioning: standard
+    detail: >-
+      SAML 2.0. Lifecycle is governed by the Canadian Access Federation's metadata refresh rather
+      than by a McMaster-published policy. In eduGAIN continuously since 2017-11-28.
+    evidence:
+      - url: https://technical.edugain.org/api.php?action=list_entities&format=json
+        status: 200
+        locator: first_seen = "2017-11-28 21:35:27"

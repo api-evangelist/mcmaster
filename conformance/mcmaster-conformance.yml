@@ -1,0 +1,109 @@
+# x-method is the AUTHORSHIP vocabulary build-provenance-manifest.py reads (who wrote the
+# file: we did). `method: probed` below is the university-pipeline PROVENANCE vocabulary
+# (how we came to hold it: live probe). Two axes, two keys, neither guessed.
+x-method: generated
+version: '0.1'
+generated: '2026-09-01'
+method: probed
+source: https://macsphere.mcmaster.ca/server/oai/request?verb=Identify
+regime: education
+note: >-
+  Conformance against the Kin Score `education` regime standards[]. REWARD-ONLY: only standards
+  evidenced by a live probe on 2026-09-01 are listed as met. Standards with no evidence are listed
+  as not_found with the reason, and nothing is claimed from prose.
+standards:
+  - id: oai-pmh
+    status: met
+    operator: institution
+    detail: >-
+      MacSphere, McMaster University Libraries' DSpace 8.2 institutional repository, exposes a
+      conformant OAI-PMH 2.0 interface. The Identify response declares protocolVersion 2.0,
+      repositoryIdentifier macsphere.mcmaster.ca, granularity YYYY-MM-DDThh:mm:ssZ and
+      deletedRecord transient. Twelve metadata formats are offered.
+    evidence:
+      - url: https://macsphere.mcmaster.ca/server/oai/request?verb=Identify
+        status: 200
+        locator: OAI-PMH/Identify/protocolVersion = "2.0"
+      - url: https://macsphere.mcmaster.ca/server/oai/request?verb=ListMetadataFormats
+        status: 200
+        locator: >-
+          metadataPrefix: oai_dc, qdc, dim, mods, mets, didl, ore, xoai, rdf, marc, rioxx, uketd_dc
+  - id: shibboleth
+    status: met
+    operator: federation
+    detail: >-
+      McMaster operates its own Shibboleth Identity Provider at entityID
+      https://sso.mcmaster.ca/idp/shibboleth. The IdP publishes machine-readable SAML 2.0 metadata
+      at that URL and asserts the shibmd:Scope mcmaster.ca.
+    evidence:
+      - url: https://sso.mcmaster.ca/idp/shibboleth
+        status: 200
+        locator: EntityDescriptor/@entityID and Extensions/shibmd:Scope = "mcmaster.ca"
+  - id: saml
+    status: met
+    operator: federation
+    detail: >-
+      The same entity carries an IDPSSODescriptor and an AttributeAuthorityDescriptor, is registered
+      in the Canadian Access Federation (registration authority http://www.canarie.ca) and is
+      published into eduGAIN. SIRTFI is asserted. First seen in eduGAIN 2017-11-28.
+    evidence:
+      - url: https://sso.mcmaster.ca/idp/shibboleth
+        status: 200
+        locator: EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+      - url: https://technical.edugain.org/api.php?action=list_entities&format=json
+        status: 200
+        locator: entityid = "https://sso.mcmaster.ca/idp/shibboleth", code = "CAF", sirtfi_status = 1
+  - id: datacite
+    status: met
+    operator: registry
+    detail: >-
+      McMaster University is a registered DataCite provider, id `mcmaster`, memberType
+      consortium_organization, country CA, linked to ROR 02fa3aq29. Membership is via the Canadian
+      DataCite consortium. This is a fact about McMaster; the DataCite API is DataCite's contract
+      and is not saved here.
+    evidence:
+      - url: https://api.datacite.org/providers/mcmaster
+        status: 200
+        locator: data.attributes.name = "McMaster University", memberType = "consortium_organization"
+  - id: crossref
+    status: met
+    operator: registry
+    detail: >-
+      McMaster University Library is Crossref member 5872, holding DOI prefix 10.15173 with 3,018
+      DOIs registered as of 2026-09-01. McMaster Undergraduate Research Journal is a separate
+      member, 5874. The Crossref API is Crossref's contract and is not saved here.
+    evidence:
+      - url: https://api.crossref.org/members/5872
+        status: 200
+        locator: message.primary-name = "McMaster University Library", prefixes = ["10.15173"]
+  - id: orcid
+    status: not_found
+    detail: >-
+      No ORCID identifier is exposed on any McMaster-operated surface probed. The McMaster Experts
+      person record carries id, name, macid and appointments but no orcid field, and the publication
+      record carries doi but no author identifiers. Absence of evidence, not evidence of absence —
+      McMaster researchers hold ORCID iDs, but McMaster publishes no machine-readable link to them.
+    evidence:
+      - url: https://experts.mcmaster.ca/api/people
+        status: 200
+        locator: batchItems[].keys() contains no orcid
+  - id: scim
+    status: not_found
+    detail: No SCIM provisioning endpoint found on any mcmaster.ca host. Not expected to be public.
+  - id: lti
+    status: not_found
+    detail: >-
+      McMaster runs Avenue to Learn (Desire2Learn Brightspace) as its LMS. Any LTI conformance
+      belongs to D2L's contract, not McMaster's, and no McMaster-operated LTI surface was found.
+  - id: oneroster
+    status: not_found
+    detail: OneRoster is a K-12 rostering standard; not applicable to this institution's surfaces.
+  - id: ed-fi
+    status: not_found
+    detail: Ed-Fi is a US K-12 data standard; not applicable to a Canadian university.
+  - id: caliper
+    status: not_found
+    detail: No Caliper Analytics endpoint found on any McMaster-operated host.
+  - id: qti
+    status: not_found
+    detail: No QTI surface found. Assessment content sits inside the vendor LMS.

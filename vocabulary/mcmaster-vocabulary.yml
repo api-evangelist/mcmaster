@@ -1,0 +1,61 @@
+version: '0.1'
+generated: '2026-09-01'
+method: derived
+source: openapi/mcmaster-experts-openapi.yml
+note: >-
+  Terms McMaster's own surfaces use, with the McMaster-specific meaning. Derived from probed
+  responses and metadata; nothing here is imported from a vendor glossary.
+terms:
+  - term: MacID
+    definition: >-
+      McMaster's institutional login identifier, issued to every student, staff member and faculty
+      member. Required to sign in to the Azure API Management developer portal, and exposed as the
+      `macid` field on every McMaster Experts person record.
+    surfaces: [ developer.api.mcmaster.ca, experts.mcmaster.ca ]
+    personal_data: true
+  - term: McMaster Experts
+    definition: >-
+      McMaster's researcher and expertise discovery gateway — a bespoke application, not a vendor
+      research-information system. Indexes people, groups, user labels and publications.
+    surface: https://experts.mcmaster.ca
+  - term: group
+    definition: >-
+      An organisational unit in the Experts taxonomy — a Department, Faculty, centre or institute.
+      Carries a slug usable as the `group` filter on /api/people.
+    example_typeNames: [ Department, group ]
+  - term: user-label
+    definition: >-
+      A field-of-research or expertise classification attached to a person or publication. Surfaced
+      as `labels` and `labelKeys` on a publication record.
+  - term: MacSphere
+    definition: >-
+      McMaster University Libraries' institutional repository of theses, dissertations and
+      open-access outputs. DSpace 8.2, self-hosted under mcmaster.ca, holding 26,361 items as of
+      2026-09-01. OAI-PMH repositoryIdentifier is macsphere.mcmaster.ca.
+    surface: https://macsphere.mcmaster.ca
+  - term: Mosaic
+    definition: McMaster's student and administrative information system. No public API surface.
+    surface: https://mosaic.mcmaster.ca
+  - term: Avenue to Learn
+    definition: >-
+      McMaster's learning management system, a D2L Brightspace deployment. Any LTI or Caliper
+      conformance is D2L's, not McMaster's.
+  - term: UTS
+    definition: >-
+      University Technology Services, the unit that operates developer.api.mcmaster.ca and McMaster's
+      central IT. Publishes no status page.
+    surface: https://uts.mcmaster.ca
+  - term: Borealis
+    definition: >-
+      The Canadian Dataverse Repository, operated by Scholars Portal for the Ontario Council of
+      University Libraries. McMaster holds the named `mcmaster` collection on it — a tenancy, not a
+      McMaster-operated platform.
+    surface: https://borealisdata.ca/dataverse/mcmaster
+  - term: CAF
+    definition: >-
+      Canadian Access Federation, operated by CANARIE. The registration authority for McMaster's
+      Shibboleth IdP, which is published onward into eduGAIN.
+  - term: DOI prefix 10.15173
+    definition: >-
+      The Crossref DOI prefix registered to McMaster University Library, member 5872. A publication
+      record bearing this prefix was minted under McMaster's own membership rather than a publisher's.

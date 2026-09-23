@@ -1,0 +1,30 @@
+# x-method is the AUTHORSHIP vocabulary build-provenance-manifest.py reads (who wrote the
+# file: we did). `method: probed` below is the university-pipeline PROVENANCE vocabulary
+# (how we came to hold it: live probe). Two axes, two keys, neither guessed.
+x-method: generated
+version: '0.1'
+generated: '2026-09-01'
+method: probed
+source: https://experts.mcmaster.ca/api/search
+note: >-
+  No OAuth scopes exist on any McMaster-operated surface. This file records that absence with
+  evidence rather than leaving the artifact unwritten, and records the SAML attribute release that
+  stands in place of scopes on the federation surface.
+oauth_scopes: []
+oauth_scopes_detail: >-
+  The McMaster Experts API is unauthenticated and declares no securitySchemes, so there is nothing
+  to scope. The Azure API Management portal at developer.api.mcmaster.ca issues subscription keys
+  per product after MacID sign-in, but the product list is gated and no scope or product name could
+  be read anonymously.
+federation_attribute_release:
+  surface: https://sso.mcmaster.ca/idp/shibboleth
+  x-operator: federation
+  detail: >-
+    A Shibboleth IdP's equivalent of scopes is its attribute release policy, which is negotiated per
+    service provider and is not published in the entity metadata. The metadata does assert
+    shibmd:Scope mcmaster.ca, which bounds every scoped attribute (eduPersonPrincipalName,
+    eduPersonScopedAffiliation) the IdP may assert.
+  evidence:
+    - url: https://sso.mcmaster.ca/idp/shibboleth
+      status: 200
+      locator: Extensions/shibmd:Scope regexp="false" = "mcmaster.ca"

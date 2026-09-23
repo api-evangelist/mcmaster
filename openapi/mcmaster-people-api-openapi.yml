@@ -1,0 +1,159 @@
+openapi: 3.2.0
+info:
+  title: McMaster Experts People API
+  version: '2026-09-01'
+  summary: Public read-only JSON API behind McMaster University's researcher and expertise discovery gateway.
+  description: McMaster Experts is McMaster University's researcher and expertise discovery gateway, operated by the university itself at experts.mcmaster.ca.
+  contact:
+    name: McMaster Experts
+    url: https://experts.mcmaster.ca/about
+  x-operator: institution
+  x-operator-evidence: Host experts.mcmaster.ca is under McMaster University's own registrable domain mcmaster.ca. The application is bespoke (Next.js build, McMaster-specific `macid` field, McMaster group taxonomy) and matches no vendor research-information product.
+  x-provenance:
+    generated: '2026-09-01'
+    method: probed
+    source: https://experts.mcmaster.ca/api/search?q=nursing
+servers:
+- url: https://experts.mcmaster.ca
+  description: Production. Observed live 2026-09-01.
+security: []
+tags:
+- name: People
+  description: Researcher and staff directory records.
+paths:
+  /api/people:
+    get:
+      operationId: listPeople
+      tags:
+      - People
+      summary: List researcher and staff directory records
+      description: 'Returns a batch of directory records. Observed 60 records per response against an `itemCount` of 7301 on 2026-09-01. NO PAGINATION PARAMETER WAS FOUND: `page`, `from`, `size`, `after`, `searchAfter` and `batchAfter` were each probed and none was echoed in `params` nor changed the first record returned. Items carry a `sortValues` array that is the shape of an Elasticsearch `search_after` cursor, but the parameter name that consumes it was not discovered. Only `q`, `group` and `sort` are honoured.'
+      parameters:
+      - name: q
+        in: query
+        description: Free-text filter. Observed narrowing `itemCount` from 7301 to 235 for `nursing`.
+        schema:
+          type: string
+      - name: group
+        in: query
+        description: Group slug filter. Observed narrowing `itemCount` to 228 for `nursing`.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort order. `position`, `relevance` and `lastName` were each accepted and echoed. `name` returned 500, so the set is closed and these three are the confirmed members.
+        schema:
+          type: string
+          enum:
+          - position
+          - relevance
+          - lastName
+          default: position
+      responses:
+        '200':
+          description: A batch of directory records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeopleResponse'
+        '500':
+          description: Unrecognised `sort` value. Observed for `sort=name`.
+        '503':
+          description: Edge throttling under rapid sequential requests.
+components:
+  schemas:
+    Person:
+      type: object
+      description: A directory record. PERSONAL DATA — see the note in `info.description`. Documented structurally; no real record is reproduced in this repository's examples.
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          description: Display name.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        macid:
+          type: string
+          description: McMaster institutional login identifier. PERSONAL DATA. Typically surname plus initial plus a digit.
+          x-personal-data: true
+        overviewHTML:
+          type:
+          - string
+          - 'null'
+        teachingOverviewHTML:
+          type:
+          - string
+          - 'null'
+        researchOverviewHTML:
+          type:
+          - string
+          - 'null'
+        defaultGroup:
+          type:
+          - string
+          - 'null'
+        defaultPosition:
+          type:
+          - string
+          - 'null'
+          description: Primary appointment title.
+        appointments:
+          type: array
+          description: All appointments held, ranked.
+          items:
+            type: object
+            properties:
+              positionRank:
+                type: integer
+              positionKey:
+                type: string
+              position:
+                type: string
+              groupKeys:
+                type: array
+                items:
+                  type: string
+              group:
+                type: string
+        groupKeys:
+          type: array
+          items:
+            type: string
+        score:
+          type:
+          - number
+          - 'null'
+        sortValues:
+          type: array
+          description: Elasticsearch sort tuple. Cursor-shaped; no parameter was found that consumes it.
+          items:
+            type:
+            - string
+            - integer
+    PeopleResponse:
+      type: object
+      required:
+      - batchItems
+      - itemCount
+      - params
+      properties:
+        batchItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        itemCount:
+          type: integer
+          description: Total records matching the filter, not the number returned in this batch.
+        params:
+          type: object
+          properties:
+            q:
+              type: string
+            group:
+              type: string
+            sort:
+              type: string
+x-method: generated

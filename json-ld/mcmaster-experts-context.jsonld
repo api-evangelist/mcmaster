@@ -1,0 +1,37 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "mcm": "https://experts.mcmaster.ca/ns#",
+    "schema": "https://schema.org/",
+    "id": "@id",
+    "name": "schema:name",
+    "firstName": "schema:givenName",
+    "lastName": "schema:familyName",
+    "macid": { "@id": "mcm:macid", "@type": "schema:Text" },
+    "defaultPosition": "schema:jobTitle",
+    "defaultGroup": { "@id": "schema:memberOf", "@type": "@id" },
+    "appointments": { "@id": "schema:hasOccupation", "@container": "@set" },
+    "position": "schema:jobTitle",
+    "group": "schema:memberOf",
+    "groupKeys": { "@id": "mcm:groupKey", "@container": "@set" },
+    "titleHTML": "schema:name",
+    "authors": { "@id": "schema:author", "@container": "@list" },
+    "date": { "@id": "schema:datePublished", "@type": "schema:Date" },
+    "journal": { "@id": "schema:isPartOf", "@type": "@id" },
+    "citationCount": "mcm:citationCount",
+    "doi": { "@id": "schema:identifier", "@type": "schema:PropertyValue" },
+    "url": { "@id": "schema:url", "@type": "@id" },
+    "labels": { "@id": "schema:about", "@container": "@set" },
+    "itemCount": "schema:numberOfItems",
+    "batchItems": { "@id": "schema:itemListElement", "@container": "@set" },
+    "items": { "@id": "schema:itemListElement", "@container": "@set" },
+    "total": "schema:numberOfItems"
+  },
+  "x-provenance": {
+    "generated": "2026-09-01",
+    "method": "derived",
+    "source": "openapi/mcmaster-experts-openapi.yml",
+    "note": "Maps probed McMaster Experts response fields onto schema.org. macid has no schema.org equivalent and is namespaced under mcm:; it is personal data and must not be republished."
+  },
+  "x-operator": "institution"
+}

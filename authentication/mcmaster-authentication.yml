@@ -1,0 +1,71 @@
+# x-method is the AUTHORSHIP vocabulary build-provenance-manifest.py reads (who wrote the
+# file: we did). `method: probed` below is the university-pipeline PROVENANCE vocabulary
+# (how we came to hold it: live probe). Two axes, two keys, neither guessed.
+x-method: generated
+version: '0.1'
+generated: '2026-09-01'
+method: probed
+source: https://experts.mcmaster.ca/api/people
+note: >-
+  Authentication posture per surface, established by probing on 2026-09-01. McMaster operates two
+  very different doors: a gated Azure API Management portal that nothing can be read through, and an
+  undocumented anonymous JSON API that anyone can read everything through.
+surfaces:
+  - surface: McMaster Experts API
+    host: experts.mcmaster.ca
+    x-operator: institution
+    scheme: none
+    detail: >-
+      No authentication of any kind. /api/search, /api/people and /api/publications each answer
+      anonymously over HTTPS with no key, cookie, Origin restriction or Referer check. No
+      WWW-Authenticate, no 401 path, no securitySchemes.
+    evidence:
+      - url: https://experts.mcmaster.ca/api/people
+        status: 200
+      - url: https://experts.mcmaster.ca/api/publications
+        status: 200
+    caveat: >-
+      Anonymous access to 7,301 person records carrying macid values is a disclosure worth naming.
+      See review.yml. It is not presented here as a feature.
+  - surface: McMaster API Service Developer Portal
+    host: developer.api.mcmaster.ca
+    x-operator: institution
+    scheme: institutional_sso
+    detail: >-
+      Azure API Management developer portal. Both /apis and /products 302 to
+      /signin?returnUrl=..., so neither the API catalog nor the product list can be read
+      anonymously. Sign-in requires a MacID plus a registration step. No anonymous OpenAPI, no
+      public product list, no published terms.
+    evidence:
+      - url: https://developer.api.mcmaster.ca/apis
+        status: 200
+        locator: redirected to https://developer.api.mcmaster.ca/signin?returnUrl=%2Fapis
+      - url: https://developer.api.mcmaster.ca/products
+        status: 200
+        locator: redirected to https://developer.api.mcmaster.ca/signin?returnUrl=%2Fproducts
+  - surface: MacSphere DSpace REST + OAI-PMH
+    host: macsphere.mcmaster.ca
+    x-operator: institution
+    scheme: none_for_read
+    detail: >-
+      Read operations are anonymous. DSpace 8.2 exposes /server/api/authn for authenticated write
+      and submission workflows, which are not public. OAI-PMH is fully anonymous.
+    evidence:
+      - url: https://macsphere.mcmaster.ca/server/api
+        status: 200
+        locator: _links.authn -> /server/api/authn
+  - surface: McMaster Shibboleth IdP
+    host: sso.mcmaster.ca
+    x-operator: federation
+    scheme: saml2_shibboleth
+    detail: >-
+      This surface IS McMaster's authentication. The IdP metadata document is anonymous and
+      machine-readable; the SSO profile endpoint requires a valid SAML AuthnRequest (a bare GET
+      returns 400). The host root returns 403, which is correct hardening, not a fault.
+    evidence:
+      - url: https://sso.mcmaster.ca/idp/shibboleth
+        status: 200
+      - url: https://sso.mcmaster.ca/idp/profile/SAML2/Redirect/SSO
+        status: 400
+      - url: https://sso.mcmaster.ca/
+        status: 403

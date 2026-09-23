@@ -1,0 +1,316 @@
+# x-archived-from: mcmaster-experts-openapi.yml
+# x-archived-on: 2026-09-16
+# authorship for provenance.yml; info.x-provenance.method: probed is the pipeline axis
+x-method: generated
+openapi: 3.1.0
+info:
+  title: McMaster Experts API
+  version: '2026-09-01'
+  summary: Public read-only JSON API behind McMaster University's researcher and expertise discovery gateway.
+  description: >-
+    McMaster Experts is McMaster University's researcher and expertise discovery gateway, operated by
+    the university itself at experts.mcmaster.ca. It is a custom application (Next.js front end over an
+    Elasticsearch index), NOT a vendor research-information system — there is no Elsevier Pure `/ws/api`,
+    no Symplectic Elements admin, and no VIVO surface on this host. The JSON endpoints its own front end
+    calls answer anonymously over HTTPS and are documented here.
+
+
+    This contract was written by PROBING the live service on 2026-09-01. Every path, parameter and
+    response field below was observed in a real response. No endpoint, parameter or schema is inferred
+    from documentation, because McMaster publishes none: there is no developer portal, no OpenAPI, no
+    terms of use and no rate-limit statement for this API. Treat it as an undocumented internal surface
+    that happens to be reachable, not as a supported public product.
+
+
+    PERSONAL DATA: `/api/people` returns named individuals together with their `macid` — the McMaster
+    institutional login identifier. The directory is intentionally public, but the identifier is not
+    obviously intended for bulk collection. Examples in this repository use placeholders rather than
+    real records, and no agent skill or MCP tool is derived from this endpoint. See
+    ../review.yml for the disclosure note.
+  contact:
+    name: McMaster Experts
+    url: https://experts.mcmaster.ca/about
+  x-operator: institution
+  x-operator-evidence: >-
+    Host experts.mcmaster.ca is under McMaster University's own registrable domain mcmaster.ca. The
+    application is bespoke (Next.js build, McMaster-specific `macid` field, McMaster group taxonomy)
+    and matches no vendor research-information product.
+  x-provenance:
+    generated: '2026-09-01'
+    method: probed
+    source: https://experts.mcmaster.ca/api/search?q=nursing
+servers:
+  - url: https://experts.mcmaster.ca
+    description: Production. Observed live 2026-09-01.
+tags:
+  - name: Search
+    description: Cross-entity keyword search over people, groups, labels and publications.
+  - name: People
+    description: Researcher and staff directory records.
+  - name: Publications
+    description: Scholarly works attributed to McMaster researchers.
+paths:
+  /api/search:
+    get:
+      operationId: search
+      tags: [ Search ]
+      summary: Search across all indexed entity types
+      description: >-
+        Keyword search returning a mixed result set of groups (departments, centres, institutes),
+        users, user labels and publications, ranked by Elasticsearch relevance score. Observed
+        returning `total` 1114 for `q=nursing` on 2026-09-01.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Free-text query. Echoed back in `params`.
+          schema: { type: string }
+          example: nursing
+      responses:
+        '200':
+          description: Ranked mixed-entity result set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '500':
+          description: Returned for an unrecognised value of a recognised parameter.
+        '503':
+          description: >-
+            Returned by the edge under rapid sequential requests. Observed while probing; no
+            documented rate limit exists. Back off and retry.
+  /api/people:
+    get:
+      operationId: listPeople
+      tags: [ People ]
+      summary: List researcher and staff directory records
+      description: >-
+        Returns a batch of directory records. Observed 60 records per response against an
+        `itemCount` of 7301 on 2026-09-01. NO PAGINATION PARAMETER WAS FOUND: `page`, `from`,
+        `size`, `after`, `searchAfter` and `batchAfter` were each probed and none was echoed in
+        `params` nor changed the first record returned. Items carry a `sortValues` array that is
+        the shape of an Elasticsearch `search_after` cursor, but the parameter name that consumes
+        it was not discovered. Only `q`, `group` and `sort` are honoured.
+      parameters:
+        - name: q
+          in: query
+          description: Free-text filter. Observed narrowing `itemCount` from 7301 to 235 for `nursing`.
+          schema: { type: string }
+        - name: group
+          in: query
+          description: Group slug filter. Observed narrowing `itemCount` to 228 for `nursing`.
+          schema: { type: string }
+        - name: sort
+          in: query
+          description: >-
+            Sort order. `position`, `relevance` and `lastName` were each accepted and echoed.
+            `name` returned 500, so the set is closed and these three are the confirmed members.
+          schema:
+            type: string
+            enum: [ position, relevance, lastName ]
+            default: position
+      responses:
+        '200':
+          description: A batch of directory records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeopleResponse'
+        '500':
+          description: Unrecognised `sort` value. Observed for `sort=name`.
+        '503':
+          description: Edge throttling under rapid sequential requests.
+  /api/publications:
+    get:
+      operationId: listPublications
+      tags: [ Publications ]
+      summary: List scholarly works
+      description: >-
+        Returns a batch of scholarly works attributed to McMaster researchers. Observed 96 records
+        per response against an `itemCount` of 273828 on 2026-09-01. The `aggregations` key is
+        present on every response and was `null` in every response observed; the parameter that
+        populates it was not discovered. `group` was probed and is NOT honoured — it is dropped
+        from the echoed `params` and `itemCount` is unchanged.
+      parameters:
+        - name: q
+          in: query
+          description: Free-text filter. Observed narrowing `itemCount` to 11399 for `cancer`.
+          schema: { type: string }
+        - name: sort
+          in: query
+          description: Sort order. `newest` and `oldest` were accepted and echoed.
+          schema:
+            type: string
+            enum: [ newest, oldest ]
+            default: newest
+      responses:
+        '200':
+          description: A batch of scholarly works.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicationsResponse'
+        '503':
+          description: Edge throttling under rapid sequential requests.
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      required: [ params, total, items ]
+      properties:
+        params:
+          type: object
+          description: Echo of the query parameters the service recognised.
+          properties:
+            q: { type: string }
+        total:
+          type: integer
+          description: Total matching documents across all entity types.
+          example: 1114
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/SearchHit' }
+    SearchHit:
+      type: object
+      required: [ id, typeKey ]
+      properties:
+        id:
+          type: string
+          description: Opaque entity identifier. Numeric-as-string for publications, base64url-like for others.
+        index:
+          type: string
+          description: Name of the backing Elasticsearch index, including its build timestamp.
+          example: search_1788255001
+        score:
+          type: number
+          description: Elasticsearch relevance score.
+        nameHTML:
+          type: [ string, 'null' ]
+          description: Display name with search-term highlighting markup.
+        nameKey:
+          type: [ string, 'null' ]
+          description: Plain display name.
+        typeKey:
+          type: string
+          description: Entity type. Values observed while probing; the set is not published.
+          examples: [ group, user, user-label, publication ]
+        typeNames:
+          type: array
+          items: { type: string }
+          description: Human-readable type labels, most specific first.
+        typeBoost:
+          type: integer
+          description: Ranking weight applied to this entity type.
+        slug:
+          type: [ string, 'null' ]
+          description: URL slug on experts.mcmaster.ca.
+    PeopleResponse:
+      type: object
+      required: [ batchItems, itemCount, params ]
+      properties:
+        batchItems:
+          type: array
+          items: { $ref: '#/components/schemas/Person' }
+        itemCount:
+          type: integer
+          description: Total records matching the filter, not the number returned in this batch.
+        params:
+          type: object
+          properties:
+            q: { type: string }
+            group: { type: string }
+            sort: { type: string }
+    Person:
+      type: object
+      description: >-
+        A directory record. PERSONAL DATA — see the note in `info.description`. Documented
+        structurally; no real record is reproduced in this repository's examples.
+      properties:
+        id: { type: integer }
+        name: { type: string, description: Display name. }
+        firstName: { type: string }
+        lastName: { type: string }
+        macid:
+          type: string
+          description: >-
+            McMaster institutional login identifier. PERSONAL DATA. Typically surname plus initial
+            plus a digit.
+          x-personal-data: true
+        overviewHTML: { type: [ string, 'null' ] }
+        teachingOverviewHTML: { type: [ string, 'null' ] }
+        researchOverviewHTML: { type: [ string, 'null' ] }
+        defaultGroup: { type: [ string, 'null' ] }
+        defaultPosition: { type: [ string, 'null' ], description: Primary appointment title. }
+        appointments:
+          type: array
+          description: All appointments held, ranked.
+          items:
+            type: object
+            properties:
+              positionRank: { type: integer }
+              positionKey: { type: string }
+              position: { type: string }
+              groupKeys:
+                type: array
+                items: { type: string }
+              group: { type: string }
+        groupKeys:
+          type: array
+          items: { type: string }
+        score: { type: [ number, 'null' ] }
+        sortValues:
+          type: array
+          description: Elasticsearch sort tuple. Cursor-shaped; no parameter was found that consumes it.
+          items: { type: [ string, integer ] }
+    PublicationsResponse:
+      type: object
+      required: [ batchItems, itemCount, params, aggregations ]
+      properties:
+        batchItems:
+          type: array
+          items: { $ref: '#/components/schemas/Publication' }
+        itemCount:
+          type: integer
+          example: 273828
+        params:
+          type: object
+          properties:
+            q: { type: string }
+            sort: { type: string }
+        aggregations:
+          type: [ object, 'null' ]
+          description: Present on every response; observed null in every response probed.
+    Publication:
+      type: object
+      properties:
+        id: { type: string }
+        titleHTML: { type: string, description: Title with highlighting markup. }
+        parentName: { type: [ string, 'null' ], description: Containing venue as recorded on the record. }
+        type: { type: string, examples: [ Journal article ] }
+        authors:
+          type: array
+          description: Author list in abbreviated "Surname I" form.
+          items: { type: string }
+        date: { type: string, format: date }
+        journal: { type: [ string, 'null' ] }
+        journalKey: { type: [ string, 'null' ] }
+        citationCount: { type: [ integer, 'null' ] }
+        url: { type: [ string, 'null' ], format: uri, description: Resolver URL, typically the DOI resolver. }
+        doi:
+          type: [ string, 'null' ]
+          description: >-
+            DOI of the work. Where the DOI prefix is 10.15173 the record was minted under McMaster
+            University Library's own Crossref membership (member 5872).
+        labelKeys:
+          type: array
+          items: { type: string }
+        labels:
+          type: array
+          description: Field-of-research classification labels.
+          items: { type: string }
+        score: { type: [ number, 'null' ] }
+        sortValues:
+          type: array
+          items: { type: [ string, integer ] }
+  securitySchemes: {}
+security: []

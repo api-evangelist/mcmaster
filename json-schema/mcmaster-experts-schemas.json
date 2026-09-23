@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/mcmaster/main/json-schema/mcmaster-experts-schemas.json",
+  "title": "McMaster Experts API schemas",
+  "description": "Response schemas for the McMaster Experts API, extracted from the probed OpenAPI at openapi/mcmaster-experts-openapi.yml. Personal-data fields are flagged with x-personal-data.",
+  "x-provenance": {
+    "generated": "2026-09-01",
+    "method": "derived",
+    "source": "openapi/mcmaster-experts-openapi.yml"
+  },
+  "x-operator": "institution",
+  "$defs": {
+    "SearchHit": {
+      "type": "object",
+      "required": ["id", "typeKey"],
+      "properties": {
+        "id": { "type": "string" },
+        "index": { "type": "string" },
+        "score": { "type": ["number", "null"] },
+        "nameHTML": { "type": ["string", "null"] },
+        "nameKey": { "type": ["string", "null"] },
+        "typeKey": { "type": "string" },
+        "typeNames": { "type": "array", "items": { "type": "string" } },
+        "typeBoost": { "type": "integer" },
+        "slug": { "type": ["string", "null"] }
+      }
+    },
+    "SearchResponse": {
+      "type": "object",
+      "required": ["params", "total", "items"],
+      "properties": {
+        "params": { "type": "object", "properties": { "q": { "type": "string" } } },
+        "total": { "type": "integer" },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/SearchHit" } }
+      }
+    },
+    "Person": {
+      "type": "object",
+      "description": "PERSONAL DATA. Documented structurally; no real record appears in this repository.",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "macid": { "type": "string", "x-personal-data": true },
+        "overviewHTML": { "type": ["string", "null"] },
+        "teachingOverviewHTML": { "type": ["string", "null"] },
+        "researchOverviewHTML": { "type": ["string", "null"] },
+        "defaultGroup": { "type": ["string", "null"] },
+        "defaultPosition": { "type": ["string", "null"] },
+        "appointments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "positionRank": { "type": "integer" },
+              "positionKey": { "type": "string" },
+              "position": { "type": "string" },
+              "groupKeys": { "type": "array", "items": { "type": "string" } },
+              "group": { "type": "string" }
+            }
+          }
+        },
+        "groupKeys": { "type": "array", "items": { "type": "string" } },
+        "score": { "type": ["number", "null"] },
+        "sortValues": { "type": "array" }
+      }
+    },
+    "PeopleResponse": {
+      "type": "object",
+      "required": ["batchItems", "itemCount", "params"],
+      "properties": {
+        "batchItems": { "type": "array", "items": { "$ref": "#/$defs/Person" } },
+        "itemCount": { "type": "integer" },
+        "params": {
+          "type": "object",
+          "properties": {
+            "q": { "type": "string" },
+            "group": { "type": "string" },
+            "sort": { "type": "string", "enum": ["position", "relevance", "lastName"] }
+          }
+        }
+      }
+    },
+    "Publication": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "titleHTML": { "type": "string" },
+        "parentName": { "type": ["string", "null"] },
+        "type": { "type": "string" },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "date": { "type": "string", "format": "date" },
+        "journal": { "type": ["string", "null"] },
+        "journalKey": { "type": ["string", "null"] },
+        "citationCount": { "type": ["integer", "null"] },
+        "url": { "type": ["string", "null"], "format": "uri" },
+        "doi": { "type": ["string", "null"] },
+        "labelKeys": { "type": "array", "items": { "type": "string" } },
+        "labels": { "type": "array", "items": { "type": "string" } },
+        "score": { "type": ["number", "null"] },
+        "sortValues": { "type": "array" }
+      }
+    },
+    "PublicationsResponse": {
+      "type": "object",
+      "required": ["batchItems", "itemCount", "params", "aggregations"],
+      "properties": {
+        "batchItems": { "type": "array", "items": { "$ref": "#/$defs/Publication" } },
+        "itemCount": { "type": "integer" },
+        "params": {
+          "type": "object",
+          "properties": {
+            "q": { "type": "string" },
+            "sort": { "type": "string", "enum": ["newest", "oldest"] }
+          }
+        },
+        "aggregations": { "type": ["object", "null"] }
+      }
+    }
+  }
+}

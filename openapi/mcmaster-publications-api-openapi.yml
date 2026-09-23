@@ -1,0 +1,152 @@
+openapi: 3.2.0
+info:
+  title: McMaster Experts Publications API
+  version: '2026-09-01'
+  summary: Public read-only JSON API behind McMaster University's researcher and expertise discovery gateway.
+  description: McMaster Experts is McMaster University's researcher and expertise discovery gateway, operated by the university itself at experts.mcmaster.ca.
+  contact:
+    name: McMaster Experts
+    url: https://experts.mcmaster.ca/about
+  x-operator: institution
+  x-operator-evidence: Host experts.mcmaster.ca is under McMaster University's own registrable domain mcmaster.ca. The application is bespoke (Next.js build, McMaster-specific `macid` field, McMaster group taxonomy) and matches no vendor research-information product.
+  x-provenance:
+    generated: '2026-09-01'
+    method: probed
+    source: https://experts.mcmaster.ca/api/search?q=nursing
+servers:
+- url: https://experts.mcmaster.ca
+  description: Production. Observed live 2026-09-01.
+security: []
+tags:
+- name: Publications
+  description: Scholarly works attributed to McMaster researchers.
+paths:
+  /api/publications:
+    get:
+      operationId: listPublications
+      tags:
+      - Publications
+      summary: List scholarly works
+      description: Returns a batch of scholarly works attributed to McMaster researchers. Observed 96 records per response against an `itemCount` of 273828 on 2026-09-01. The `aggregations` key is present on every response and was `null` in every response observed; the parameter that populates it was not discovered. `group` was probed and is NOT honoured — it is dropped from the echoed `params` and `itemCount` is unchanged.
+      parameters:
+      - name: q
+        in: query
+        description: Free-text filter. Observed narrowing `itemCount` to 11399 for `cancer`.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort order. `newest` and `oldest` were accepted and echoed.
+        schema:
+          type: string
+          enum:
+          - newest
+          - oldest
+          default: newest
+      responses:
+        '200':
+          description: A batch of scholarly works.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicationsResponse'
+        '503':
+          description: Edge throttling under rapid sequential requests.
+components:
+  schemas:
+    Publication:
+      type: object
+      properties:
+        id:
+          type: string
+        titleHTML:
+          type: string
+          description: Title with highlighting markup.
+        parentName:
+          type:
+          - string
+          - 'null'
+          description: Containing venue as recorded on the record.
+        type:
+          type: string
+          examples:
+          - Journal article
+        authors:
+          type: array
+          description: Author list in abbreviated "Surname I" form.
+          items:
+            type: string
+        date:
+          type: string
+          format: date
+        journal:
+          type:
+          - string
+          - 'null'
+        journalKey:
+          type:
+          - string
+          - 'null'
+        citationCount:
+          type:
+          - integer
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: Resolver URL
+          typically the DOI resolver.: null
+        doi:
+          type:
+          - string
+          - 'null'
+          description: DOI of the work. Where the DOI prefix is 10.15173 the record was minted under McMaster University Library's own Crossref membership (member 5872).
+        labelKeys:
+          type: array
+          items:
+            type: string
+        labels:
+          type: array
+          description: Field-of-research classification labels.
+          items:
+            type: string
+        score:
+          type:
+          - number
+          - 'null'
+        sortValues:
+          type: array
+          items:
+            type:
+            - string
+            - integer
+    PublicationsResponse:
+      type: object
+      required:
+      - batchItems
+      - itemCount
+      - params
+      - aggregations
+      properties:
+        batchItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/Publication'
+        itemCount:
+          type: integer
+          example: 273828
+        params:
+          type: object
+          properties:
+            q:
+              type: string
+            sort:
+              type: string
+        aggregations:
+          type:
+          - object
+          - 'null'
+          description: Present on every response; observed null in every response probed.
+x-method: generated

@@ -1,0 +1,21 @@
+# Front Door AI Index — mcmaster — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: mcmaster
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: macsphere.mcmaster.ca
+  final_host: macsphere.mcmaster.ca
+  ownership: own
+  owner: mcmaster
+  shares_host_with: null
+  inherited_from: null
+  verdict: thin
+  score: null
+  host_score: null
+  density: null
+  words: 18
+  tiers: null
+  ambiguous: null
+  top_terms: null

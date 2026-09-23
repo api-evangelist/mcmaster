@@ -1,0 +1,166 @@
+# x-method is the AUTHORSHIP vocabulary build-provenance-manifest.py reads (who wrote the
+# file: we did). `method: probed` below is the university-pipeline PROVENANCE vocabulary
+# (how we came to hold it: live probe). Two axes, two keys, neither guessed.
+x-method: generated
+version: '0.1'
+generated: '2026-09-01'
+method: probed
+source: https://experts.mcmaster.ca/api/search?q=nursing
+x-operator: institution
+note: >-
+  Request shapes and counts below were observed live on 2026-09-01. PERSON RECORDS ARE PLACEHOLDERS.
+  The /api/people endpoint returns real named individuals together with their macid (the McMaster
+  institutional login identifier); per the enrichment PII guardrail no live person record is
+  reproduced here. Organisational and bibliographic values are real because they are not personal data.
+examples:
+  - name: Search across all entity types
+    operationId: search
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/search?q=nursing
+    observed:
+      status: 200
+      content_type: application/json
+      total: 1114
+      entity_types_seen: [ group, user, user-label, publication ]
+    response_shape:
+      params: { q: nursing }
+      total: 1114
+      items:
+        - id: 1AlB3dJGTZg
+          index: search_1788255001
+          score: 168.74664
+          nameKey: Nursing
+          nameHTML: "<em>Nursing</em>"
+          typeKey: group
+          typeNames: [ Department, group ]
+          typeBoost: 25
+          slug: nursing
+        - id: "<opaque-id>"
+          typeKey: user
+          slug: "<macid>"
+          nameKey: "<display name withheld — personal data>"
+  - name: List directory records, unfiltered
+    operationId: listPeople
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/people
+    observed:
+      status: 200
+      itemCount: 7301
+      batch_size: 60
+      params_echoed: { sort: position }
+    response_shape:
+      itemCount: 7301
+      params: { sort: position }
+      batchItems:
+        - id: 0
+          name: "<Given Family>"
+          firstName: "<given>"
+          lastName: "<family>"
+          macid: "<macid>"
+          defaultPosition: Professor
+          defaultGroup: "<department slug>"
+          overviewHTML: null
+          appointments:
+            - positionRank: 1000
+              position: Professor
+              group: "<department>"
+              groupKeys: []
+          sortValues: [ 1000, "0" ]
+  - name: Filter directory records by free text
+    operationId: listPeople
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/people?q=nursing
+    observed:
+      status: 200
+      itemCount: 235
+      params_echoed: { q: nursing, sort: position }
+  - name: Filter directory records by group
+    operationId: listPeople
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/people?group=nursing
+    observed:
+      status: 200
+      itemCount: 228
+      params_echoed: { group: nursing, sort: position }
+  - name: Reject an unsupported sort
+    operationId: listPeople
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/people?sort=name
+    observed:
+      status: 500
+      body: empty
+      note: >-
+        The accepted sort set is closed. position, relevance and lastName were each echoed back in
+        params; name returns 500 with no error body.
+  - name: List scholarly works, newest first
+    operationId: listPublications
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/publications
+    observed:
+      status: 200
+      itemCount: 273828
+      batch_size: 96
+      params_echoed: { sort: newest }
+      aggregations: null
+    response_shape:
+      batchItems:
+        - id: "3524470"
+          titleHTML: Investigation of tibia and fibula fracture risk during football impact
+          type: Journal article
+          date: '2026-09-01'
+          journal: "Proceedings of the Institution of Mechanical Engineers, Part P"
+          citationCount: 5
+          doi: 10.1177/17543371241306903
+          url: http://dx.doi.org/10.1177/17543371241306903
+          labels:
+            - 32 Biomedical and clinical sciences
+            - 3202 Clinical Sciences
+  - name: Filter scholarly works and reverse the sort
+    operationId: listPublications
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/publications?q=cancer&sort=oldest
+    observed:
+      status: 200
+      itemCount: 11399
+      params_echoed: { q: cancer, sort: oldest }
+  - name: Edge throttling under rapid sequential requests
+    request:
+      method: GET
+      url: https://experts.mcmaster.ca/api/publications
+    observed:
+      status: 503
+      content_type: text/html
+      body: 503 Service Temporarily Unavailable
+      note: >-
+        Reproduced during probing by issuing requests back to back with no delay. No rate limit is
+        documented and no Retry-After header is returned; the 503 is an HTML page, not JSON.
+  - name: OAI-PMH Identify against MacSphere
+    request:
+      method: GET
+      url: https://macsphere.mcmaster.ca/server/oai/request?verb=Identify
+    observed:
+      status: 200
+      content_type: text/xml
+      repositoryName: Macsphere at McMaster University
+      protocolVersion: '2.0'
+      adminEmail: macsphere@mcmaster.ca
+      earliestDatestamp: '2014-06-17T16:10:13Z'
+      repositoryIdentifier: macsphere.mcmaster.ca
+      note: Host redirects to prod-ms-be.lib.mcmaster.ca, still under mcmaster.ca.
+  - name: SAML metadata for the McMaster Shibboleth IdP
+    request:
+      method: GET
+      url: https://sso.mcmaster.ca/idp/shibboleth
+    observed:
+      status: 200
+      content_type: application/xml
+      entityID: https://sso.mcmaster.ca/idp/shibboleth
+      scope: mcmaster.ca
+      displayName: McMaster University
