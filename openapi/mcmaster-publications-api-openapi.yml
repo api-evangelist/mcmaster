@@ -54,6 +54,33 @@ paths:
           description: Edge throttling under rapid sequential requests.
 components:
   schemas:
+    PublicationsResponse:
+      type: object
+      required:
+      - batchItems
+      - itemCount
+      - params
+      - aggregations
+      properties:
+        batchItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/Publication'
+        itemCount:
+          type: integer
+          example: 273828
+        params:
+          type: object
+          properties:
+            q:
+              type: string
+            sort:
+              type: string
+        aggregations:
+          type:
+          - object
+          - 'null'
+          description: Present on every response; observed null in every response probed.
     Publication:
       type: object
       properties:
@@ -122,31 +149,4 @@ components:
             type:
             - string
             - integer
-    PublicationsResponse:
-      type: object
-      required:
-      - batchItems
-      - itemCount
-      - params
-      - aggregations
-      properties:
-        batchItems:
-          type: array
-          items:
-            $ref: '#/components/schemas/Publication'
-        itemCount:
-          type: integer
-          example: 273828
-        params:
-          type: object
-          properties:
-            q:
-              type: string
-            sort:
-              type: string
-        aggregations:
-          type:
-          - object
-          - 'null'
-          description: Present on every response; observed null in every response probed.
 x-method: generated

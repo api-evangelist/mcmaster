@@ -49,6 +49,27 @@ paths:
           description: Returned by the edge under rapid sequential requests. Observed while probing; no documented rate limit exists. Back off and retry.
 components:
   schemas:
+    SearchResponse:
+      type: object
+      required:
+      - params
+      - total
+      - items
+      properties:
+        params:
+          type: object
+          description: Echo of the query parameters the service recognised.
+          properties:
+            q:
+              type: string
+        total:
+          type: integer
+          description: Total matching documents across all entity types.
+          example: 1114
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchHit'
     SearchHit:
       type: object
       required:
@@ -96,25 +117,4 @@ components:
           - string
           - 'null'
           description: URL slug on experts.mcmaster.ca.
-    SearchResponse:
-      type: object
-      required:
-      - params
-      - total
-      - items
-      properties:
-        params:
-          type: object
-          description: Echo of the query parameters the service recognised.
-          properties:
-            q:
-              type: string
-        total:
-          type: integer
-          description: Total matching documents across all entity types.
-          example: 1114
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchHit'
 x-method: generated
