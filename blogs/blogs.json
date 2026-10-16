@@ -2,15 +2,17 @@
   "repo": "mcmaster",
   "feeds": [
     {
+      "source": "https://news.mcmaster.ca/feed/",
+      "feed_url": "https://news.mcmaster.ca/feed/",
+      "title": "",
+      "saved": 10,
+      "method": "feed"
+    },
+    {
       "source": "https://library.mcmaster.ca/news",
-      "feed_url": "https://library.mcmaster.ca/news",
-      "title": "McMaster University Library News",
-      "saved": 0,
-      "method": "none",
-      "note": "All fetch attempts returned HTTP 403 Forbidden (news page, /news/feed, /news/rss.xml, /news/feed.xml).",
-      "error": "fetch_failed: HTTPError"
+      "error": "HTTPError"
     }
   ],
-  "post_count": 0,
-  "fetched": "2026-10-03T12:15:37Z"
+  "post_count": 10,
+  "fetched": "2026-10-10T13:15:00Z"
 }
