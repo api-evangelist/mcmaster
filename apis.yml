@@ -150,6 +150,12 @@ apis:
   tags:
   - Developer Portal
   - API Management
+  - Microsoft Azure
+  - Gated
+  - Authentication
+  tags_raw:
+  - Developer Portal
+  - API Management
   - Azure
   - Gated
   - Authentication
