@@ -1,4 +1,4 @@
-# McMaster University (mcmaster)
+# McMaster University
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,50 +64,138 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-McMaster University is a public research university in Hamilton, Ontario, Canada, ranked #176 in the QS World University Rankings 2025. This repository catalogs McMaster's public developer and API footprint as an [APIs.json](https://apisjson.org/) provider profile for the API Evangelist network. McMaster operates a gated institutional API service developer portal (MacID authentication required) and a publicly accessible MacSphere DSpace OAI-PMH repository interface.
+McMaster University is a public research university in Hamilton, Ontario, Canada. Its programmable footprint is small but genuinely its own, and it is larger than a June 2026 pass concluded. McMaster operates an undocumented but fully public JSON API behind McMaster Experts, its researcher and expertise discovery gateway at experts.mcmaster.ca — a bespoke application, not a vendor research-information system — answering anonymously across 7,301 directory records and 273,828 scholarly works. It self-hosts MacSphere, a DSpace 8.2 institutional repository of 26,361 items with a conformant OAI-PMH 2.0 interface on its own domain. It operates its own Shibboleth Identity Provider, published into eduGAIN through the Canadian Access Federation, which is the strongest machine-readable surface most universities have and the one this cohort was most completely missing. It runs a central Azure API Management developer portal at developer.api.mcmaster.ca, but that portal is gated behind MacID sign-in and a registration step: neither the API catalog nor the product list can be read without an institutional account, so the size of McMaster's actual internal API estate is unknown from outside. Beyond what it operates, McMaster holds real relationships on platforms it does not run — a named collection on the Borealis Dataverse, DataCite provider registration, and Crossref membership under McMaster University Library's own DOI prefix. Those are facts about McMaster; the contracts belong to the platforms. McMaster publishes no status page, no llms.txt, no security.txt, no API terms of use and no rate-limit statement, and its course catalog exists only as a human surface on a Modern Campus deployment with no API.
 
-- APIs.json: https://raw.githubusercontent.com/api-evangelist/mcmaster/refs/heads/main/apis.yml
-- Run with Naftiko: https://github.com/naftiko/fleet?utm_source=api-evangelist&utm_medium=readme&utm_campaign=mcmaster-api-evangelist&utm_content=repo
+**Areas:** University · Higher Education · Education · Canada · Ontario · U15 Group of Canadian Research Universities · Research · Research Data · Research Repository · Identity Federation · Scholarly Communication · Open Access
 
-## Type
+## McMaster University on APIs.io
 
-- Index / Consumer / 3rd-Party
+Everything profiled for McMaster University is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/mcmaster/](https://apis.io/providers/mcmaster/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (10)
 
-Education, Higher Education, University, Canada, Ontario, Research, Open Access, Library
+- [MacSphere Institutional Repository](https://apis.io/apis/mcmaster/macsphere/) — McMaster University Libraries' institutional repository of theses, dissertations and open-access research outputs. DSpace 8.2, self-hosted, holding 26,361…
+- [McMaster University Shibboleth Identity Provider](https://apis.io/apis/mcmaster/shibboleth-idp/) — McMaster's own SAML 2.0 Identity Provider, the authentication authority behind MacID. Publishes machine-readable SAML metadata anonymously at its entityID,…
+- [McMaster API Service Developer Portal](https://apis.io/apis/mcmaster/developer-portal/) — Central API management developer portal operated by University Technology Services, running on Azure API Management. Both /apis and /products redirect to…
+- [McMaster University Dataverse on Borealis](https://apis.io/apis/mcmaster/borealis-dataverse/) — McMaster's research data repository, a named collection on the Borealis Canadian Dataverse Repository holding sub-collections including the McMaster…
+- [McMaster University DataCite Registration](https://apis.io/apis/mcmaster/datacite/) — McMaster University's membership of DataCite as a consortium organisation within the Canadian DataCite consortium, giving it the ability to mint DOIs for…
+- [McMaster University Library Crossref Membership](https://apis.io/apis/mcmaster/crossref/) — McMaster University Library's Crossref membership, under which it mints DOIs on its own prefix 10.15173 for library-published scholarship. A publication…
+- [McMaster University ROR Registration](https://apis.io/apis/mcmaster/ror/) — McMaster University's entry in the Research Organization Registry, the persistent identifier that links the institution across DataCite, Crossref and the…
+- [McMaster University People API](https://apis.io/apis/mcmaster/mcmaster-people-api/) — Researcher and staff directory records.
+- [McMaster University Publications API](https://apis.io/apis/mcmaster/mcmaster-publications-api/) — Scholarly works attributed to McMaster researchers.
+- [McMaster University Search API](https://apis.io/apis/mcmaster/mcmaster-search-api/) — Cross-entity keyword search over people, groups, labels and publications.
 
-## APIs
+### Published properties
 
-- **McMaster API Service Developer Portal** — institutional API management portal; gated behind MacID authentication and registration, so the catalog is not publicly browsable. Docs: https://developer.api.mcmaster.ca/
-- **MacSphere OAI-PMH Repository Interface** — public OAI-PMH 2.0 metadata-harvesting endpoint for the MacSphere DSpace institutional repository (`https://macsphere.mcmaster.ca/server/oai/request`). Docs: https://library.mcmaster.ca/research/getting-started-macsphere
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Plans / Rate Limits / FinOps
+#### JSON Schema (1)
 
-- Plans & Pricing: [plans/mcmaster-plans-pricing.yml](plans/mcmaster-plans-pricing.yml)
-- Rate Limits: [rate-limits/mcmaster-rate-limits.yml](rate-limits/mcmaster-rate-limits.yml)
-- FinOps: [finops/mcmaster-finops.yml](finops/mcmaster-finops.yml)
+The data models the API reads and writes.
 
-## Timestamps
+- [McMaster Experts API schemas](https://apis.io/schemas/mcmaster/mcmaster-experts-schemas/)
 
-- Created: 2026-06-03
-- Modified: 2026-06-03
+#### JSON-LD (2)
 
-## Common Properties
+Linked-data contexts for the provider's vocabulary.
 
-- Website: https://www.mcmaster.ca/
-- Developer Portal: https://developer.api.mcmaster.ca/
-- GitHub: https://github.com/mcmaster-university
-- LinkedIn: https://ca.linkedin.com/school/mcmaster-university/
-- Status: https://uts.mcmaster.ca/status/
+- [Mcmaster Context](https://apis.io/jsonld/mcmaster/mcmaster-context/)
+- [Mcmaster Experts Context](https://apis.io/jsonld/mcmaster/mcmaster-experts-context/)
 
-## Notes
+#### Governance rules (1)
 
-- The developer portal at developer.api.mcmaster.ca resolves (HTTP 200) but is fully gated behind MacID authentication; no API names, endpoints, or documentation are publicly verifiable, so none are fabricated here.
-- The MacSphere OAI-PMH endpoint was confirmed live (`verb=Identify` returns repository name "Macsphere at McMaster University"); the legacy `/oai/request` path returns 404.
-- The `mcmaster-university` GitHub organization exists (id 47285564) but currently has zero public repositories.
-- No dedicated `status.mcmaster.ca` subdomain exists; the UTS status page is used instead.
+Spectral rulesets for the provider's contracts.
 
-## Maintainers
+- [McMaster University — experts rules](https://apis.io/rules/mcmaster/mcmaster-experts-rules/)
 
-- Kin Lane — kin@apievangelist.com
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Mcmaster Authentication](https://apis.io/security/mcmaster/mcmaster-authentication/)
+- [Mcmaster Domain Security](https://apis.io/security/mcmaster/mcmaster-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Mcmaster Scopes](https://apis.io/scopes/mcmaster/mcmaster-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Mcmaster Plans Pricing](https://apis.io/plans/mcmaster/mcmaster-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Mcmaster Rate Limits](https://apis.io/rate-limits/mcmaster/mcmaster-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Mcmaster Finops](https://apis.io/finops/mcmaster/mcmaster-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.mcmaster.ca/)
+- [Privacy policy](https://secretariat.mcmaster.ca/privacy/)
+- [GitHub](https://github.com/McMasterRS)
+
+## API Evangelist rating
+
+**Kin Score 36.1** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 57.1 |
+| Contract quality | 56.9 |
+| Contract governance | 15.2 |
+| Operational transparency | 7.9 |
+| Developer ergonomics | 28.6 |
+| Access clarity | 28.9 |
+
+**Agent readiness 21.6** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | na |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | na |
+| Error Semantics | — |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | na |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 30.4** — Education & Research
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/mcmaster/](https://apis.io/providers/mcmaster/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for McMaster University: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/mcmaster/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
